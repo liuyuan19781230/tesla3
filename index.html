@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0DTE COCKPIT // Options Decision Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[#0a0e0d] text-zinc-200 min-h-screen">
+
+  <!-- Top Bar -->
+  <header class="border-b border-zinc-800/80 bg-[#0a0e0d]/95 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <div class="flex items-center gap-3">
+          <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+          <h1 class="font-bebas text-2xl tracking-[0.15em] text-zinc-100">0DTE<span class="text-emerald-400">.</span>COCKPIT</h1>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 text-xs font-mono uppercase tracking-wider">
+          <a href="#dashboard" class="text-emerald-400 border-b border-emerald-400 pb-1">Dashboard</a>
+          <a href="#builder" class="text-zinc-500 hover:text-zinc-200 transition pb-1">Builder</a>
+          <a href="#risk" class="text-zinc-500 hover:text-zinc-200 transition pb-1">Risk Guard</a>
+          <a href="#journal" class="text-zinc-500 hover:text-zinc-200 transition pb-1">Journal</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-6 text-xs font-mono">
+        <div class="hidden md:flex items-center gap-2">
+          <span class="text-zinc-500">MARKET</span>
+          <span id="market-status" class="text-emerald-400">● OPEN</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+          <span class="text-zinc-500">CLOCK</span>
+          <span id="clock" class="text-zinc-200 tabular-nums">--:--:--</span>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 border border-zinc-700 rounded-sm">
+          <span class="text-zinc-500">PNL</span>
+          <span id="header-pnl" class="text-emerald-400 tabular-nums">+$0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Symbol Strip -->
+  <div class="border-b border-zinc-800/60 bg-[#0c1110]">
+    <div class="max-w-[1600px] mx-auto px-6 py-2 flex items-center gap-6 overflow-x-auto text-xs font-mono">
+      <span class="text-zinc-500 uppercase tracking-wider whitespace-nowrap">Watchlist</span>
+      <div id="watchlist" class="flex items-center gap-5"></div>
+    </div>
+  </div>
+
+  <main class="max-w-[1600px] mx-auto px-6 py-6 space-y-6">
+
+    <!-- Hero Strategy Signal -->
+    <section id="dashboard" class="grid grid-cols-12 gap-4">
+
+      <!-- Primary Signal Card -->
+      <div class="col-span-12 lg:col-span-8 panel relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-[40%] h-full opacity-[0.04] pointer-events-none">
+          <div class="font-bebas text-[200px] leading-none text-emerald-400 select-none">TSLA</div>
+        </div>
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-1">Active Signal · TSLA 0DTE</div>
+            <div class="flex items-baseline gap-3">
+              <span class="font-bebas text-5xl text-zinc-100 tracking-wide" id="tsla-price">$248.32</span>
+              <span id="tsla-change" class="font-mono text-sm text-emerald-400">+2.14 (+0.87%)</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-1">Conviction</div>
+            <div class="font-bebas text-4xl text-emerald-400" id="conviction-score">72</div>
+            <div class="text-[10px] font-mono text-zinc-500">/100</div>
+          </div>
+        </div>
+
+        <!-- Strategy Recommendation -->
+        <div class="border-l-2 border-emerald-400 pl-4 py-2 my-4 bg-emerald-400/5">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 mb-1">Recommended Setup</div>
+          <div class="text-xl font-mono text-zinc-100 mb-1" id="strategy-name">Iron Condor · 245P / 240P / 252C / 257C</div>
+          <div class="text-xs font-mono text-zinc-400" id="strategy-reason">Price pinned near max gamma strike. IV elevated (38.2%). Dealer hedging suggests range-bound action through close.</div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 mt-4">
+          <div class="metric">
+            <div class="metric-label">Max Profit</div>
+            <div class="metric-value text-emerald-400" id="max-profit">$185</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Max Loss</div>
+            <div class="metric-value text-red-400" id="max-loss">-$315</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">POP</div>
+            <div class="metric-value text-zinc-100" id="pop">68%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">B/E Range</div>
+            <div class="metric-value text-zinc-100" id="be-range">243.15 ↔ 253.85</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Guard Status -->
+      <div class="col-span-12 lg:col-span-4 panel">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bebas text-xl tracking-wider text-zinc-100">Risk Guard</h3>
+          <div class="flex items-center gap-1.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-400">Armed</span>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1.5">
+              <span class="text-zinc-500 uppercase tracking-wider">Daily P&L Limit</span>
+              <span class="text-zinc-200 tabular-nums" id="daily-pnl-text">-$240 / -$1,000</span>
+            </div>
+            <div class="h-1 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-amber-400 transition-all duration-500" id="daily-pnl-bar" style="width: 24%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1.5">
+              <span class="text-zinc-500 uppercase tracking-wider">Trade Count</span>
+              <span class="text-zinc-200 tabular-nums" id="trade-count-text">3 / 8</span>
+            </div>
+            <div class="h-1 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-400 transition-all duration-500" id="trade-count-bar" style="width: 37%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1.5">
+              <span class="text-zinc-500 uppercase tracking-wider">Consecutive Losses</span>
+              <span class="text-zinc-200 tabular-nums" id="loss-streak-text">1 / 3</span>
+            </div>
+            <div class="h-1 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-400 transition-all duration-500" id="loss-streak-bar" style="width: 33%"></div>
+            </div>
+          </div>
+        </div>
+
+        <button id="emergency-stop" class="mt-5 w-full py-3 border border-red-500/40 hover:border-red-500 hover:bg-red-500/10 transition text-red-400 font-mono text-xs uppercase tracking-[0.2em]">
+          ⏻ Emergency Flatten
+        </button>
+      </div>
+    </section>
+
+    <!-- Charts Row -->
+    <section class="grid grid-cols-12 gap-4">
+
+      <!-- Gamma Exposure Chart -->
+      <div class="col-span-12 lg:col-span-8 panel">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <h3 class="font-bebas text-xl tracking-wider text-zinc-100">Gamma Exposure by Strike</h3>
+            <div class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">TSLA · Today's Expiry</div>
+          </div>
+          <div class="flex gap-2 text-[10px] font-mono">
+            <span class="px-2 py-1 border border-emerald-400/30 text-emerald-400">Call γ</span>
+            <span class="px-2 py-1 border border-red-400/30 text-red-400">Put γ</span>
+            <span class="px-2 py-1 border border-amber-400/40 text-amber-400">Spot</span>
+          </div>
+        </div>
+        <div class="h-72 relative">
+          <canvas id="gammaChart"></canvas>
+        </div>
+      </div>
+
+      <!-- IV / Skew -->
+      <div class="col-span-12 lg:col-span-4 panel">
+        <div class="mb-3">
+          <h3 class="font-bebas text-xl tracking-wider text-zinc-100">IV Term Structure</h3>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Implied Volatility · 0–30 DTE</div>
+        </div>
+        <div class="h-44 mb-3">
+          <canvas id="ivChart"></canvas>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+          <div class="border-l border-emerald-400/40 pl-2">
+            <div class="text-zinc-500 text-[10px] uppercase tracking-wider">IV Rank</div>
+            <div class="text-zinc-100 text-lg" id="iv-rank">42</div>
+          </div>
+          <div class="border-l border-amber-400/40 pl-2">
+            <div class="text-zinc-500 text-[10px] uppercase tracking-wider">IV Crush Risk</div>
+            <div class="text-amber-400 text-lg" id="iv-crush">High</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Strategy Builder -->
+    <section id="builder" class="panel">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 class="font-bebas text-2xl tracking-wider text-zinc-100">Strategy Builder</h3>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Construct · Preview · Stage</div>
+        </div>
+        <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Step <span id="builder-step" class="text-emerald-400">1</span> / 3</div>
+      </div>
+
+      <div class="grid grid-cols-12 gap-5">
+        <!-- Templates -->
+        <div class="col-span-12 lg:col-span-4">
+          <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-3">01 · Template</div>
+          <div class="space-y-2" id="template-list"></div>
+        </div>
+
+        <!-- Parameters -->
+        <div class="col-span-12 lg:col-span-4">
+          <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-3">02 · Parameters</div>
+          <div class="space-y-3 font-mono text-xs">
+            <div>
+              <label class="block text-zinc-500 uppercase tracking-wider mb-1.5 text-[10px]">Symbol</label>
+              <input id="param-symbol" type="text" value="TSLA" class="w-full bg-[#0a0e0d] border border-zinc-800 px-3 py-2 text-zinc-100 focus:border-emerald-400 focus:outline-none uppercase" />
+            </div>
+            <div>
+              <label class="block text-zinc-500 uppercase tracking-wider mb-1.5 text-[10px]">Contracts</label>
+              <input id="param-contracts" type="number" value="1" min="1" class="w-full bg-[#0a0e0d] border border-zinc-800 px-3 py-2 text-zinc-100 focus:border-emerald-400 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-zinc-500 uppercase tracking-wider mb-1.5 text-[10px]">Width ($)</label>
+              <input id="param-width" type="number" value="5" min="1" step="0.5" class="w-full bg-[#0a0e0d] border border-zinc-800 px-3 py-2 text-zinc-100 focus:border-emerald-400 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-zinc-500 uppercase tracking-wider mb-1.5 text-[10px]">Distance from Spot (Δ)</label>
+              <input id="param-delta" type="number" value="20" min="5" max="50" class="w-full bg-[#0a0e0d] border border-zinc-800 px-3 py-2 text-zinc-100 focus:border-emerald-400 focus:outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="col-span-12 lg:col-span-4">
+          <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-3">03 · Order Preview</div>
+          <div class="border border-zinc-800 bg-[#0a0e0d] p-4 font-mono text-xs space-y-1.5" id="order-preview">
+            <!-- legs go here -->
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-3 text-xs font-mono">
+            <div class="border border-zinc-800 px-3 py-2">
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider">Net Credit</div>
+              <div class="text-emerald-400 tabular-nums" id="preview-credit">$1.85</div>
+            </div>
+            <div class="border border-zinc-800 px-3 py-2">
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider">Buying Power</div>
+              <div class="text-zinc-100 tabular-nums" id="preview-bp">$315</div>
+            </div>
+          </div>
+          <button id="stage-order" class="mt-4 w-full py-3 bg-emerald-400 hover:bg-emerald-300 transition text-zinc-900 font-mono text-xs uppercase tracking-[0.2em] font-semibold">
+            Stage Order →
+          </button>
+          <p class="mt-2 text-[10px] font-mono text-zinc-600 leading-relaxed">Staging only. No order is sent — broker integration disabled in this build.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trade Journal -->
+    <section id="journal" class="panel">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-bebas text-2xl tracking-wider text-zinc-100">Today's Journal</h3>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Executed positions · Auto-tagged</div>
+        </div>
+        <div class="flex gap-4 text-xs font-mono">
+          <div><span class="text-zinc-500">Win:</span> <span class="text-emerald-400" id="stat-win">2</span></div>
+          <div><span class="text-zinc-500">Loss:</span> <span class="text-red-400" id="stat-loss">1</span></div>
+          <div><span class="text-zinc-500">Avg Hold:</span> <span class="text-zinc-100" id="stat-hold">14m</span></div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs font-mono">
+          <thead>
+            <tr class="text-zinc-500 uppercase tracking-wider text-[10px] border-b border-zinc-800">
+              <th class="text-left py-2 pr-4">Time</th>
+              <th class="text-left py-2 pr-4">Symbol</th>
+              <th class="text-left py-2 pr-4">Strategy</th>
+              <th class="text-right py-2 pr-4">Credit</th>
+              <th class="text-right py-2 pr-4">P&L</th>
+              <th class="text-left py-2 pr-4">Tag</th>
+              <th class="text-left py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="journal-tbody" class="text-zinc-300"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-6 pb-10 text-[10px] font-mono text-zinc-600 leading-relaxed border-t border-zinc-900">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2">Disclaimer</div>
+          <p>This is a UI prototype. All data is simulated. Nothing here is a recommendation, solicitation, or investment advice. 0DTE options carry substantial risk of total loss.</p>
+        </div>
+        <div>
+          <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2">Build</div>
+          <p>v0.1.0 · MVP · No broker connected · No live data feed · Simulated for design review</p>
+        </div>
+        <div>
+          <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2">Roadmap</div>
+          <p>Polygon.io feed → IBKR exec → Auto-flatten engine → Multi-account → Backtester</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 space-y-2 z-50"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

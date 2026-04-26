@@ -1,0 +1,229 @@
+/* ============================================
+   0DTE COCKPIT — Terminal Aesthetic
+   ============================================ */
+
+:root {
+  --bg: #0a0e0d;
+  --bg-2: #0c1110;
+  --bg-3: #0f1514;
+  --line: #1c2422;
+  --line-2: #2a3431;
+  --emerald: #34d399;
+  --emerald-dim: #10b981;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+}
+
+html, body {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Subtle scanline / grid texture on body */
+body {
+  background-image:
+    radial-gradient(1px 1px at 25% 30%, rgba(52, 211, 153, 0.04) 1px, transparent 0),
+    radial-gradient(1px 1px at 75% 70%, rgba(52, 211, 153, 0.03) 1px, transparent 0),
+    linear-gradient(to bottom, transparent 49.5%, rgba(255,255,255,0.012) 50%, transparent 50.5%);
+  background-size: 200px 200px, 320px 320px, 100% 4px;
+  background-attachment: fixed;
+}
+
+/* Panel — the core surface */
+.panel {
+  background: linear-gradient(180deg, var(--bg-3) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--line);
+  padding: 1.25rem;
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 8px; height: 8px;
+  border-top: 1px solid var(--emerald);
+  border-left: 1px solid var(--emerald);
+  opacity: 0.6;
+}
+.panel::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 8px; height: 8px;
+  border-bottom: 1px solid var(--emerald);
+  border-right: 1px solid var(--emerald);
+  opacity: 0.6;
+}
+
+/* Metric mini card */
+.metric {
+  border: 1px solid var(--line);
+  padding: 0.6rem 0.75rem;
+  background: rgba(0,0,0,0.2);
+}
+.metric-label {
+  font-size: 9px;
+  color: var(--zinc-500);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.25rem;
+}
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Watchlist tickers */
+.ticker {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+.ticker .sym {
+  color: var(--zinc-300);
+  font-weight: 500;
+}
+.ticker .px {
+  color: var(--zinc-200);
+  font-variant-numeric: tabular-nums;
+}
+.ticker .chg-up { color: var(--emerald); }
+.ticker .chg-dn { color: var(--red); }
+
+/* Template card */
+.template-card {
+  border: 1px solid var(--line);
+  padding: 0.75rem 0.9rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+  background: rgba(0,0,0,0.15);
+  position: relative;
+}
+.template-card:hover {
+  border-color: var(--zinc-600);
+  background: rgba(52, 211, 153, 0.03);
+}
+.template-card.active {
+  border-color: var(--emerald);
+  background: rgba(52, 211, 153, 0.06);
+}
+.template-card.active::after {
+  content: '◆';
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  color: var(--emerald);
+  font-size: 10px;
+}
+.template-card .t-name {
+  font-size: 0.8rem;
+  color: var(--zinc-100);
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.template-card .t-desc {
+  font-size: 0.65rem;
+  color: var(--zinc-500);
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Tabular numbers everywhere relevant */
+.tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* Toast */
+.toast {
+  background: var(--bg-3);
+  border: 1px solid var(--emerald);
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--zinc-100);
+  min-width: 280px;
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.1);
+  animation: slide-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.toast.toast-warn { border-color: var(--amber); }
+.toast.toast-error { border-color: var(--red); }
+.toast .toast-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 0.2rem;
+}
+.toast.toast-warn .toast-label { color: var(--amber); }
+.toast.toast-error .toast-label { color: var(--red); }
+
+@keyframes slide-in {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Pulse for live indicators */
+@keyframes soft-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--zinc-600); }
+
+/* Anchor link offset for sticky header */
+section { scroll-margin-top: 80px; }
+
+/* Focus rings — match aesthetic */
+input:focus, button:focus { outline: none; }
+input { font-family: 'JetBrains Mono', monospace; }
+
+/* Journal table rows */
+#journal-tbody tr {
+  border-bottom: 1px solid var(--line);
+  transition: background 150ms;
+}
+#journal-tbody tr:hover {
+  background: rgba(52, 211, 153, 0.03);
+}
+#journal-tbody td {
+  padding: 0.7rem 1rem 0.7rem 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid;
+}
+.tag-discipline { border-color: var(--emerald); color: var(--emerald); }
+.tag-fomo { border-color: var(--red); color: var(--red); }
+.tag-news { border-color: var(--amber); color: var(--amber); }
+.tag-pattern { border-color: var(--zinc-500); color: var(--zinc-400); }
+
+@media (max-width: 768px) {
+  .panel { padding: 1rem; }
+  .font-bebas.text-5xl { font-size: 2.5rem; }
+}
